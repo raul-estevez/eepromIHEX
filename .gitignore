@@ -1,3 +1,7 @@
+# eeprom files
+*.eep
+*.eeprom
+
 # Prerequisites
 *.d
 

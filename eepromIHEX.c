@@ -9,7 +9,7 @@ int main(void){
 
     // Create the file
     FILE *eeprom_file;
-    eeprom_file = fopen("b.eeprom","w");
+    eeprom_file = fopen("b.eep","w");
 
     while(data_remainig != 0){
 
