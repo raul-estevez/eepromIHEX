@@ -4,6 +4,9 @@
 #include <unistd.h>
 #include <string.h>
 #include <ctype.h>
+#include <getopt.h>
+
+#define VERSION "v0.1-alpha"
 
 // TODO: add data from file
 unsigned char data[24] = {0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0A,0x0B,0x0C,0x0D,0x0E,0x0F,0x10,0x11,0x12,0x13,0x14,0x15,0x16, 0x50};
@@ -18,13 +21,31 @@ int main(int argc, char *argv[]){
     unsigned char help_flag = 0;
     unsigned char file_flag = 0;
 
+
+    static struct option long_options[] = {
+        {"output", required_argument, NULL, 'O'},
+        {"o", required_argument, NULL, 'o'},
+        {"datalength", required_argument, NULL, 'D'},
+        {"d", required_argument, NULL, 'd'},
+        {"address", required_argument, NULL, 'A'},
+        {"a", required_argument, NULL, 'a'},
+        {"verbose", no_argument, NULL, 'V'},
+        {"v", no_argument, NULL, 'v'},
+        {"help", no_argument, NULL, 'H'},
+        {"h", no_argument, NULL, 'h'},
+        {"version", no_argument, NULL, 'G'},
+        {0,0,0,0}
+    };
+
     int option;
-    while((option = getopt(argc, argv, "o:d:a:vh")) != -1){ //get option from the getopt() method
+    while((option = getopt_long_only(argc, argv, "o:O:d:D:a:A:vVhHG", long_options, NULL)) != -1){ //get option from the getopt() method
         switch(option){
+            case 'O':
             case 'o':
                 FILENAME = optarg;
                 file_flag = 1;
                 break;
+            case 'D':
             case 'd':
                 MAX_DATA_LENGTH = atoi(optarg);
                 if(MAX_DATA_LENGTH > 0xFF){
@@ -32,6 +53,7 @@ int main(int argc, char *argv[]){
                     exit(EXIT_FAILURE);
                 }
                 break;
+            case 'A':
             case 'a':
                 INTIAL_ADDRESS = atoi(optarg);
                 if(INTIAL_ADDRESS > 0xFFFF){
@@ -39,12 +61,17 @@ int main(int argc, char *argv[]){
                     exit(EXIT_FAILURE);
                 }
                 break;
+            case 'V':
             case 'v':
                 verbose_flag = 1;
                 break;
+            case 'H':
             case 'h':
                 help_flag = 1;
                 break;
+            case 'G':
+                printf("eepromIHEX %s\nCopyright (C) 2021 Raúl Estévez Gómez\nThis is free software: you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.\n", VERSION);
+                exit(EXIT_SUCCESS);
             case '?':
                 if(optopt == 'o'){
                     fprintf (stderr, "Option -%c requires an argument.\n", optopt);
