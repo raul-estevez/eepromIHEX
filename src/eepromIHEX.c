@@ -1,20 +1,83 @@
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
-
-// TODO: Filename should be an int, MAX_DATA_LENGTH must be a number and <= 0xFF same with INTIAL_ADDRESS (<=0xFFFF)
-#define FILENAME "b.eep"
-#define MAX_DATA_LENGTH 16              // In bytes
-#define INTIAL_ADDRESS 0
+#include <unistd.h>
+#include <string.h>
+#include <ctype.h>
 
 // TODO: add data from file
 unsigned char data[24] = {0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0A,0x0B,0x0C,0x0D,0x0E,0x0F,0x10,0x11,0x12,0x13,0x14,0x15,0x16, 0x50};
 
-int main(void){
+int main(int argc, char *argv[]){
+
+    // ################# Command line arguments handling #################  
+    char *FILENAME = NULL;
+    unsigned char MAX_DATA_LENGTH = 0x10;               // Default 16 bytes 
+    unsigned short INTIAL_ADDRESS = 0;                  // Initial address 0
+    unsigned char verbose_flag = 0;
+    unsigned char help_flag = 0;
+    unsigned char file_flag = 0;
+
+    int option;
+    while((option = getopt(argc, argv, "o:d:a:vh")) != -1){ //get option from the getopt() method
+        switch(option){
+            case 'o':
+                FILENAME = optarg;
+                file_flag = 1;
+                break;
+            case 'd':
+                MAX_DATA_LENGTH = atoi(optarg);
+                if(MAX_DATA_LENGTH > 0xFF){
+                    printf("Error, value given to MAX_DATA_LENGTH too big (>0xFF)");
+                    exit(EXIT_FAILURE);
+                }
+                break;
+            case 'a':
+                INTIAL_ADDRESS = atoi(optarg);
+                if(INTIAL_ADDRESS > 0xFFFF){
+                    printf("Error, value given to INTIAL_ADDRESS too big (>0xFFFF)");
+                    exit(EXIT_FAILURE);
+                }
+                break;
+            case 'v':
+                verbose_flag = 1;
+                break;
+            case 'h':
+                help_flag = 1;
+                break;
+            case '?':
+                if(optopt == 'o'){
+                    fprintf (stderr, "Option -%c requires an argument.\n", optopt);
+                } else if(optopt == 'd'){
+                    fprintf (stderr, "Option -%c requires an argument.\n", optopt);
+                } else if(optopt == 'a'){
+                    fprintf (stderr, "Option -%c requires an argument.\n", optopt);
+                }
+            default:
+                abort ();
+        }
+    }
+
+
+    if(file_flag == 0){
+        FILENAME = "c.eep";
+    }
+
+
+
+
+
+
+
+    // ################# Start of main program #################  
+
+
     // Global variables
     unsigned long data_remainig = sizeof(data);         // The raw data that remains not formatted
     unsigned short word16_counter = 0;                  // Counst how many 16 bit long data have we formatted
     unsigned short address = INTIAL_ADDRESS;            // Here you can change where your data addres starts, the it will increment by 16 (or the length of the remainin data if <16)
+
+
 
     // Create and open the file
     FILE *eeprom_file;
@@ -136,5 +199,6 @@ int main(void){
         exit(EXIT_FAILURE);
     } else {
         printf("File successfully formatted, exiting program\n");
+        exit(EXIT_SUCCESS);
     }
 }
