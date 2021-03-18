@@ -1,17 +1,18 @@
 #include <stdio.h>
 
 #define FILENAME "b.eep"
-#define MAX_DATA_LENGTH 16          // TODO: make sure this does not exceed 0XFF
+#define MAX_DATA_LENGTH 16          // TODO: make sure this does not exceed 0XFF 
                                     // In bytes
+#define INTIAL_ADDRESS 0
 
 // TODO: add data from file
 unsigned char data[24] = {0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0A,0x0B,0x0C,0x0D,0x0E,0x0F,0x10,0x11,0x12,0x13,0x14,0x15,0x16, 0x50};
 
 int main(void){
     // Global variables
-    unsigned long data_remainig = sizeof(data);         // The raw data that remains not formatted into the IHEX file
-    unsigned short word16_counter = 0;                  // Counst how many 16 bit long data have we formatted into de IHEX file
-    unsigned short address = 0;                         // Here you can change where your data addres starts, the it will increment by 16 (or the length of the remainin data if <16)
+    unsigned long data_remainig = sizeof(data);         // The raw data that remains not formatted
+    unsigned short word16_counter = 0;                  // Counst how many 16 bit long data have we formatted
+    unsigned short address = INTIAL_ADDRESS;            // Here you can change where your data addres starts, the it will increment by 16 (or the length of the remainin data if <16)
 
     // Create and open the file
     FILE *eeprom_file;
@@ -21,7 +22,7 @@ int main(void){
 
         unsigned int checksum = 0;
 
-        // Byte count and address if the data remainin is 
+        // Byte count and address if the data remainin is greater than the max data lenght
         if(data_remainig >= MAX_DATA_LENGTH){
             // Start code
             fputc(':',eeprom_file);
