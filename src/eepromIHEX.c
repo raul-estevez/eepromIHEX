@@ -1,8 +1,10 @@
 #include <stdio.h>
+#include <errno.h>
+#include <stdlib.h>
 
+// TODO: Filename should be an int, MAX_DATA_LENGTH must be a number and <= 0xFF same with INTIAL_ADDRESS (<=0xFFFF)
 #define FILENAME "b.eep"
-#define MAX_DATA_LENGTH 16          // TODO: make sure this does not exceed 0XFF 
-                                    // In bytes
+#define MAX_DATA_LENGTH 16              // In bytes
 #define INTIAL_ADDRESS 0
 
 // TODO: add data from file
@@ -17,6 +19,10 @@ int main(void){
     // Create and open the file
     FILE *eeprom_file;
     eeprom_file = fopen(FILENAME,"w");
+    if(eeprom_file == NULL){
+        perror("Error opening the file");
+        exit(EXIT_FAILURE);
+    }
 
     while(data_remainig != 0){
 
@@ -25,7 +31,10 @@ int main(void){
         // Byte count and address if the data remainin is greater than the max data lenght
         if(data_remainig >= MAX_DATA_LENGTH){
             // Start code
-            fputc(':',eeprom_file);
+            if(fputc(':',eeprom_file) == EOF){
+                perror("Error writing start code" );
+                exit(EXIT_FAILURE);
+            }
 
             // Byte count
             fprintf(eeprom_file, "%X", MAX_DATA_LENGTH);
@@ -35,34 +44,30 @@ int main(void){
 
             // Address
             address += MAX_DATA_LENGTH;
+            // Write the address, format: Padding with zeros, 4 characters
+            if(fprintf(eeprom_file,"%04X",address) < 0){
+                perror("Error writing address");
+                exit(EXIT_FAILURE);
+            }
             // The checksum algoritm sums the data byte by byte, so we need to separate each byte of the 2 byte address and sum the up
             checksum += (address & 0x00FF) + ((address & 0xFF00)>>8);
 
-            // We need to add the necessary padding to the addres to make it 2 bytes long in our file
-            if(address <= 0xF){
-                fprintf(eeprom_file,"000%X",address);
-            } else if(address <= 0xFF){
-                fprintf(eeprom_file,"00%X",address);
-            } else if(address <= 0xFFF){
-                fprintf(eeprom_file,"0%X",address);
-            } else {
-                fprintf(eeprom_file,"%X",address);
-            }
-
             // Record type
             // We assume data only
-            fputs("00",eeprom_file);
+            if(fputs("00",eeprom_file) == EOF){
+                perror("Error writting record type");
+                exit(EXIT_FAILURE);
+            }
 
             // Data
             for(long i = 0; i < MAX_DATA_LENGTH; i++){
                 // We format the data byte as we did with the address
-                if(data[MAX_DATA_LENGTH * word16_counter + i] <= 0x0F) { 
-                    fprintf(eeprom_file,"0%X", data[MAX_DATA_LENGTH * word16_counter + i]);         // We add a 0 for padding
-                    checksum += data[MAX_DATA_LENGTH * word16_counter + i];                         // As data here is only 1 byte long we do not need formatting for the cheacksum
-                } else {
-                    fprintf(eeprom_file,"%X", data[MAX_DATA_LENGTH * word16_counter +  i]);         // We do not add padding
-                    checksum += data[MAX_DATA_LENGTH * word16_counter + i];
+                //Format: padding with zeros, 2 characters
+                if(fprintf(eeprom_file,"%02X", data[MAX_DATA_LENGTH * word16_counter + i]) < 0){
+                    perror("Error writing data");
+                    exit(EXIT_FAILURE);
                 }
+                checksum += data[MAX_DATA_LENGTH * word16_counter + i];                         // As data here is only 1 byte long we do not need formatting for the cheacksum
             }
             word16_counter++;                                // This way we shift the data that will be formatted by MAX_DATA_LENGTH bytes each time we increment the variable
 
@@ -72,39 +77,40 @@ int main(void){
             // Here we do the same as above but when we have less than MAX_DATA_LENGTH bytes left, that means that this is our last data write to the file
 
             // Start code
-            fputc(':', eeprom_file);
+            if(fputc(':', eeprom_file) == EOF){
+                perror("Error wrinting final start code");
+                exit(EXIT_FAILURE);
+            }
 
             // Byte count
-            fprintf(eeprom_file,"0%X", (unsigned int)data_remainig);
+            if(fprintf(eeprom_file,"%02X", (unsigned int)data_remainig) < 0){
+                perror("Error writing final byte count");
+                exit(EXIT_FAILURE);
+            }
             checksum += (unsigned int) data_remainig;
 
             // Address
             address += data_remainig;
             checksum += (address & 0x00FF) + ((address & 0xFF00)>>8);
 
-            if(address <= 0xF){
-                fprintf(eeprom_file,"000%X",address);
-            } else if(address <= 0xFF){
-                fprintf(eeprom_file,"00%X",address);
-            } else if(address <= 0xFFF){
-                fprintf(eeprom_file,"0%X",address);
-            } else {
-                fprintf(eeprom_file,"%X",address);
+            if(fprintf(eeprom_file,"%04X",address) < 0){
+                perror("Error writing final address");
+                exit(EXIT_FAILURE);
             }
 
             // Record type
-            fputs("00",eeprom_file);
+            if(fputs("00",eeprom_file) == EOF){
+                perror("Error writing final record type");
+                exit(EXIT_FAILURE); 
+            }
 
             // Data
             for(int i = 0; i < (unsigned int)data_remainig; i++){
-                if(data[16 * word16_counter + i] <= 0x0F) { 
-                    fprintf(eeprom_file,"0%X", data[16 * word16_counter + i]);
+                    if(fprintf(eeprom_file,"%02X", data[16 * word16_counter + i]) < 0){
+                        perror("Error writing final data");
+                        exit(EXIT_FAILURE);
+                    }
                     checksum += data[16 * word16_counter + i];
-                } else {
-                    fprintf(eeprom_file,"%X", data[16 * word16_counter + i]);
-                    checksum += data[16 * word16_counter + i];
-                }
-
             }
             data_remainig = 0;
         }
@@ -114,10 +120,21 @@ int main(void){
         // printf("%X\t%X\n", checksum, ((~checksum)+1) & 0xFF);
         
         // The checksum is calculated by summing each byte we written, calculating its two's complement and keeping the LSByte
-        fprintf(eeprom_file,"%X\n", ((~checksum)+1) & 0xFF);
+        if(fprintf(eeprom_file,"%X\n", ((~checksum)+1) & 0xFF) < 0){
+            perror("Error writing checksum");
+            exit(EXIT_FAILURE);
+        }
     }
     
     // EOF
-    fputs(":00000001FF", eeprom_file);
-    fclose(eeprom_file);
+    if(fputs(":00000001FF", eeprom_file) == EOF){
+        perror("Error writing EOF");
+        exit(EXIT_FAILURE);
+    }
+    if(fclose(eeprom_file) == EOF){
+        perror("Error closing the file, exiting program anyway");
+        exit(EXIT_FAILURE);
+    } else {
+        printf("File successfully formatted, exiting program\n");
+    }
 }
