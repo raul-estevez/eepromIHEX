@@ -2,6 +2,8 @@ extern unsigned char verbose_flag;
 extern unsigned char help_flag;
 extern unsigned char file_flag;
 extern unsigned char version_flag;
+extern unsigned char dataLength_flag;
+extern unsigned char address_flag;
 
 extern unsigned char MAX_DATA_LENGTH;
 extern unsigned short INTIAL_ADDRESS;

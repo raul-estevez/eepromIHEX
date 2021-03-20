@@ -10,6 +10,8 @@ unsigned char verbose_flag;
 unsigned char help_flag;
 unsigned char file_flag;
 unsigned char version_flag;
+unsigned char dataLength_flag;
+unsigned char address_flag;
 
 unsigned char MAX_DATA_LENGTH;
 unsigned short INTIAL_ADDRESS;
@@ -44,6 +46,7 @@ int handleCLIargs(int argc, char *argv[]){
                 break;
             case 'D':
             case 'd':
+                dataLength_flag = 1;
                 MAX_DATA_LENGTH = atoi(optarg);
                 if(MAX_DATA_LENGTH > 0xFF){
                     printf("Error, value given to MAX_DATA_LENGTH too big (>0xFF)\n");
@@ -52,6 +55,7 @@ int handleCLIargs(int argc, char *argv[]){
                 break;
             case 'A':
             case 'a':
+                address_flag = 1;
                 INTIAL_ADDRESS = atoi(optarg);
                 if(INTIAL_ADDRESS > 0xFFFF){
                     printf("Error, value given to INTIAL_ADDRESS too big (>0xFFFF)\n");
