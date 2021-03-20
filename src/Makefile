@@ -1,7 +1,7 @@
 CC = gcc
 IDIR = ../include
 CFLAGS = -I$(IDIR)
-TARGET = main
+TARGET = main.out
 ODIR = obj
 
 # Busca todos los .c en el dir actual y en el include dir
@@ -11,9 +11,9 @@ O = $(patsubst %.c,%.o,$(SOURCES))
 # Quita el ../include/ de las entradas, dejando solo los nombres.o 
 OBJECTS = $(patsubst $(IDIR)/%.o,%.o,$(O))
 
-all : $(TARGET)
+all : $(TARGET).out
 
-$(TARGET) : $(OBJECTS)
+$(TARGET).out : $(OBJECTS)
 	$(CC) -o $(TARGET) $(CFLAGS) $^
 	mv $(OBJECTS) $(ODIR) 
 
