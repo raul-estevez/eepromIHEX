@@ -12,9 +12,13 @@ int main(int argc, char *argv[]){
     if(!file_flag){
         FILENAME = "a.eep";
     }
-
-    char data[32];
-    getData(2,16,data,"data.eep");
-    printf("%s\n", data);
+    
+    if(verbose_flag){
+        printf("Version: %s", VERSION);
+        printf("Input file: %s", IN_FILENAME);
+        printf("Output file: %s", FILENAME);
+        printf("Data length: %X", MAX_DATA_LENGTH);
+        printf("Initial address: %X", INTIAL_ADDRESS);
+    }
 }
 

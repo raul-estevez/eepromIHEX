@@ -49,6 +49,8 @@ void writeLine(FILE *eeprom_file, unsigned char byte_count,
     if(fputs("00",eeprom_file) == EOF){
         perror("Error writting record type\n");
         exit(EXIT_FAILURE);
+    } else if(verbose_flag){
+        printf("Successfully written record type 00\n");
     }
 
     for(unsigned short i = 0; i < byte_count; i++){
@@ -78,7 +80,6 @@ void writeLine(FILE *eeprom_file, unsigned char byte_count,
 
 
 
-
 void getData(unsigned long start_byte, unsigned char data_lenght_bytes, 
              char *data_array, char *data_file){
 
@@ -87,6 +88,8 @@ void getData(unsigned long start_byte, unsigned char data_lenght_bytes,
     if((fp = fopen(data_file, "r")) == NULL){
         perror("Error opening the file");
         exit(EXIT_FAILURE);
+    } else if(verbose_flag){
+        printf("Successfully openned data file");
     }
     
     unsigned char data_counter = 0;
@@ -96,15 +99,20 @@ void getData(unsigned long start_byte, unsigned char data_lenght_bytes,
             if(data_counter < 2*data_lenght_bytes){
                 if((c >= 0x30 && c <= 0x39) || (c >= 0x41 && c <= 0x46)){
                     data_array[data_counter - 3*start_byte] = c;
-                    printf("Escrito %c\n", data_array[data_counter 
-                            - 3*start_byte]);
                     data_counter++;
+                    if(verbose_flag){
+                        printf("Got data %c\n", data_array[data_counter 
+                                - 3*start_byte]);
+                    }
                 }
             } else {
                 break;
             }
         } else {
             data_counter++;
+            if(verbose_flag){
+                printf("Getting to data, %X ",data_counter);
+            }
         }
     }
 }

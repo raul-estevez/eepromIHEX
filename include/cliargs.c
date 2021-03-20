@@ -15,6 +15,7 @@ unsigned char MAX_DATA_LENGTH;
 unsigned short INTIAL_ADDRESS;
 char *VERSION ;
 char *FILENAME;
+char *IN_FILENAME;
 
 static struct option long_options[] = {
     {"output", required_argument, NULL, 'O'},
@@ -79,6 +80,13 @@ int handleCLIargs(int argc, char *argv[]){
             default:
                 abort ();
         }
+    }
+
+    if(argv[optind] == NULL){
+        puts("Error, input file is a mandatory argument");
+        exit(EXIT_FAILURE);
+    } else {
+        IN_FILENAME = argv[optind];
     }
     return 0;
 }

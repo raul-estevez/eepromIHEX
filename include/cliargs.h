@@ -7,8 +7,8 @@ extern unsigned char MAX_DATA_LENGTH;
 extern unsigned short INTIAL_ADDRESS;
 extern char *VERSION ;
 extern char *FILENAME;
+extern char *IN_FILENAME;
 
 int handleCLIargs(int argc, char *argv[]);
 int versionHandler(void);
 int helpHandler(void);
-
