@@ -2,6 +2,9 @@
 *.eep
 *.eeprom
 
+# swap files
+*.swp
+
 # Prerequisites
 *.d
 
