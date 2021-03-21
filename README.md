@@ -12,7 +12,7 @@ Takes data from a CSV file and formats it to IHEX. This file is then ready to be
 ## Installation
 
 For installing, clone this repository to your computer, enter in the folder
-eeproeepromIHEX and type "make", then "make install" as root.
+eepromIHEX and type "make", then "make install" as root.
 
 ```bash
 $ git clone https://github.com/SarKing/eepromIHEX
@@ -34,23 +34,20 @@ $ sudo make uninstall
 
 ## Usage
 
-The basic use of this application just requires from you the CSV data file.
+The basic use of this application just requires a CSV data file.
 
 ```bash
 $ eepromIHEX data_file
 ```
-And it will generate a file called "a.eep" that contains your data formatted t
-o IHEX.
+And it will generate a file called "a.eep" that contains your data formatted to IHEX.
 
-But you have more customization the form of arguments.
+But you have more customization in the form of arguments.
 
 #### Arguments
 
     -output             -o      The name of the output file. DEFAULT: a.eep
-    --datalenght        -d      Maximum number of bytes per IHEX entry. DEFAULT:
-    16
-    --address           -a      The first address you want to write to. DEFAULT:
-    0
+    --datalenght        -d      Maximum number of bytes per IHEX entry. DEFAULT: 16
+    --address           -a      The first address you want to write to. DEFAULT: 0
     --verbose           -v      Prints verbose information
     --help              -h      Prints help page
     --version                   Displays the version message
@@ -79,3 +76,4 @@ avrdude you have to use this command.
 ```bash
 $ avrdudde eeprom:w:filename:i
 ```
+Where filename is the .eep file you just generated
