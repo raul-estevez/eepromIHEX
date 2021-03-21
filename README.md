@@ -7,6 +7,7 @@ Takes data from a CSV file and formats it to IHEX. This file is then ready to be
 - [Usage](#usage)
     - [Arguments](#arguments)
     - [Examples](#examples)
+    - [CSV File](#csvfile)
 - [Uploading](#uploading)
 
 ## Installation
@@ -67,6 +68,20 @@ $ eepromIHEX -d 8 data.csv
 Start writing to eeprom address 0xFF instead of the default 0
 ```bash
 $ eepromIHEX -a 255 data.csv
+```
+
+#### CSV File
+The CSV file used as data source need to be like this
+```bash
+00,FF,5D,6E44,62,86,72,D2,55,12,22,4F,FF,00,00,00,23,45,63,56
+```
+It causes no problem if two or more commas are together, like this
+```bash
+00,FF,,6E44,62,86,,,55,12,22,,,,,00,23,45,63,56
+```
+But by no means can be data more than 1 byte long, so this is prohibited and will cause a malfunction
+```bash
+00,FFF,545D,6E44,62,86,72FF,D2,55,12,22,4F,FF,00,00,00,23,45,63,56
 ```
 
 ## Uploading
