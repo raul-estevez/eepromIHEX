@@ -6,22 +6,12 @@
 
 int main(int argc, char *argv[]){
 
-    VERSION = "v0.1-alpha";
+    VERSION = "v1.0.0";
 
-    /// Handle command line args /// 
+    // Handle command line args 
     handleCLIargs(argc, argv);
-
-    /// Default output filename ///
-    if(!file_flag){
-        FILENAME = "a.eep";
-    }
-    if(!dataLength_flag){
-        MAX_DATA_LENGTH = 0x10;
-    }
-    if(!address_flag){
-        INTIAL_ADDRESS = 0;
-    }
     
+    // Verbose info
     if(verbose_flag){
         printf("Version: %s\n", VERSION);
         printf("Input file: %s\n", IN_FILENAME);
@@ -30,8 +20,11 @@ int main(int argc, char *argv[]){
         printf("Initial address: %X\n", INTIAL_ADDRESS);
     }
 
-
+     ////////////////////
     /// Main program ///
+   ////////////////////
+   
+    // Openig the files 
     FILE *input_file;
     FILE *output_file;
 
@@ -48,35 +41,32 @@ int main(int argc, char *argv[]){
         puts("Successfully openned output file");
     }
     
+    // Count data
     unsigned int data_remainign = countData(input_file);
+    // This enables reading from the start of the file
     rewind(input_file);
 
     unsigned int data_counter = 0;
     char data[2*MAX_DATA_LENGTH];
     while(data_remainign >= MAX_DATA_LENGTH) {
         // Get data
-        if(verbose_flag){
-            printf("GET DATA PARAMS: %d\t0x%X\t\n", data_counter*MAX_DATA_LENGTH,
-                    MAX_DATA_LENGTH);
-        }
         getData(MAX_DATA_LENGTH, data, input_file);
         // Write data
-        if(verbose_flag){
-            printf("WRITE LINE PARAMS: 0x%X\t0x%X\n", MAX_DATA_LENGTH,
-                    MAX_DATA_LENGTH*data_counter);
-        }
-        writeLine(output_file, MAX_DATA_LENGTH, MAX_DATA_LENGTH*data_counter, data);
+        writeLine(output_file, MAX_DATA_LENGTH, MAX_DATA_LENGTH*data_counter, 
+                data);
 
         data_remainign -= MAX_DATA_LENGTH;
         data_counter++;
     }
 
+    // This is the last write to the file 
     char last_data[2*data_remainign];
-    // Get last data
+    // Get last data 
     getData(data_remainign, last_data, input_file);
-    // Write last data
-    writeLine(output_file, data_remainign, MAX_DATA_LENGTH*data_counter, last_data);
-    // Write EOF
+    // Write last data 
+    writeLine(output_file, data_remainign, MAX_DATA_LENGTH*data_counter, 
+            last_data);
+    // Write EOF 
     if((fputs(":00000001FF\n", output_file)) == EOF){
         perror("Erro writting EOF code");
     }else if(verbose_flag){
@@ -84,7 +74,7 @@ int main(int argc, char *argv[]){
     }
     // Close files
     if(fclose(input_file) == EOF){
-        perror("Erorr closing the input file");
+        perror("Error closing the input file");
         exit(EXIT_FAILURE);
     }else if(verbose_flag){
         puts("Closed input file");

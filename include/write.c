@@ -81,20 +81,25 @@ void writeLine(FILE *fp, unsigned char byte_count,
 }
 
 
-
+// For saving the cursur posisiton between data reads
 long pos = SEEK_SET;
 void getData(unsigned char data_lenght_bytes, 
              char *data_array, FILE *fp){
 
     unsigned char data_counter = 0;
     char c;
+    // Set previous posisiton
     fseek(fp, pos, SEEK_SET);
+    // While we have data
     while((c = fgetc(fp)) != EOF){
+        // See if we fetched enough data
         if(data_counter < 2*data_lenght_bytes){
+            // Only if the data is a number or a A-F letter
             if((c >= 0x30 && c <= 0x39) || (c >= 0x41 && c <= 0x46)){
                 if(verbose_flag){
                     printf("Data written: %c\n", c);
                 }
+                // Write the data to the array
                 data_array[data_counter] = c;
                 data_counter++;
             }
@@ -102,6 +107,7 @@ void getData(unsigned char data_lenght_bytes,
             break;
         }
     }
+    // Sabe current position
     pos = ftell(fp);
 }
 
@@ -112,7 +118,9 @@ unsigned int countData(FILE *fp){
     unsigned int char_counter = 0;
     char c;
     
+    // While we ahce data 
     while((c = getc(fp)) != EOF){
+        // Only if the data is a number or a A-F letter
         if((c >= 0x30 && c <= 0x39) || (c >= 0x41 && c <= 0x46)){
             char_counter++;
         }

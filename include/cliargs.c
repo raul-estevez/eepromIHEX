@@ -5,7 +5,7 @@
 
 #include "cliargs.h"
 
-
+// Define cli args flags
 unsigned char verbose_flag;
 unsigned char help_flag;
 unsigned char file_flag;
@@ -13,12 +13,14 @@ unsigned char version_flag;
 unsigned char dataLength_flag;
 unsigned char address_flag;
 
+// Define program variables
 unsigned char MAX_DATA_LENGTH;
 unsigned short INTIAL_ADDRESS;
 char *VERSION ;
 char *FILENAME;
 char *IN_FILENAME;
 
+// Long and short options
 static struct option long_options[] = {
     {"output", required_argument, NULL, 'O'},
     {"o", required_argument, NULL, 'o'},
@@ -91,6 +93,20 @@ int handleCLIargs(int argc, char *argv[]){
         exit(EXIT_FAILURE);
     } else {
         IN_FILENAME = argv[optind];
+    }
+
+
+    // Default output filename
+    if(!file_flag){
+        FILENAME = "a.eep";
+    }
+    // Default data length
+    if(!dataLength_flag){
+        MAX_DATA_LENGTH = 0x10;
+    }
+    // Default initial address
+    if(!address_flag){
+        INTIAL_ADDRESS = 0;
     }
     return 0;
 }
