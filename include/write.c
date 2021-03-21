@@ -5,13 +5,14 @@
 
 
 
-void writeLine(FILE *eeprom_file, unsigned char byte_count, 
-               unsigned short address, unsigned short data[]){
+void writeLine(FILE *fp, unsigned char byte_count, 
+               unsigned short address, char data[]){
 
     unsigned int checksum = 0;
     
+
     // Start code
-    if(fputc(':',eeprom_file) == EOF){
+    if(fputc(':',fp) == EOF){
         perror("Error writing start code\n");
         exit(EXIT_FAILURE);
     } else if(verbose_flag){
@@ -19,100 +20,105 @@ void writeLine(FILE *eeprom_file, unsigned char byte_count,
     }
 
     // Byte count
-    if(fprintf(eeprom_file, "%02X", byte_count) < 0){
+    if(fprintf(fp, "%02X", byte_count) < 0){
         perror("Error writing byte count\n");
         exit(EXIT_FAILURE);
     } else if(verbose_flag){
         printf("Successfully written byte count %02X\n",byte_count);
     }
     checksum += byte_count;
-    if(verbose_flag){
-        printf("Checksum sum: %X\n", checksum);
-    }
 
     // Address
-    if(fprintf(eeprom_file,"%04X",address) < 0){
+    if(fprintf(fp,"%04X",address) < 0){
         perror("Error writing address\n");
-        exit(EXIT_FAILURE);
+    exit(EXIT_FAILURE);
     } 
     
     // The checksum algoritm sums the data byte by byte, so we need 
     // to separate each byte of the address and sum them up
     checksum += (address & 0x00FF) + ((address & 0xFF00)>>8);
     if(verbose_flag){
-        printf("Checksum sum: %X\n", checksum);
         printf("Successfully written address %X\n", address);
+        printf("Checksum sum: %X\n", checksum);
     }
 
     // Record type
     // We assume data only
-    if(fputs("00",eeprom_file) == EOF){
+    if(fputs("00",fp) == EOF){
         perror("Error writting record type\n");
         exit(EXIT_FAILURE);
     } else if(verbose_flag){
         printf("Successfully written record type 00\n");
     }
 
-    for(unsigned short i = 0; i < byte_count; i++){
+    // Data 
+    for(int i = 0; i < 2*byte_count; i++){
         //Format: padding with zeros, 2 characters
-        if(fprintf(eeprom_file,"%02X", data[i]) < 0){
+        if((fprintf(fp,"%c", data[i])) < 0){
             perror("Error writing data\n");
             exit(EXIT_FAILURE);
+        } else if(verbose_flag){
+            printf("Data address: %d\n", i);
+            printf("Data: %c\n", data[i]);
         }
 
         checksum += data[i];                         
         if(verbose_flag){
-            printf("Successfully written data %02X\n", data[i]);
+            printf("Successfully written data %c\n", data[i]);
             printf("Checksum sum: %X\n", checksum);
         }
     }
 
     // The checksum is calculated by summing each byte we written, 
     // calculating its two's complement and keeping the LSByte
-    if(fprintf(eeprom_file,"%X\n", ((~checksum)+1) & 0xFF) < 0){
+    if(fprintf(fp,"%02X\n", ((~checksum)+1) & 0xFF) < 0){
         perror("Error writing checksum\n");
         exit(EXIT_FAILURE);
     } else if(verbose_flag){
-        printf("FINAL CHECKSUM: %02X\n", checksum);
+        printf("FINAL CHECKSUM: %02X\n", ((~checksum)+1) & 0xFF);
     }
 
 }
 
 
 
-void getData(unsigned long start_byte, unsigned char data_lenght_bytes, 
-             char *data_array, char *data_file){
+long pos = SEEK_SET;
+void getData(unsigned char data_lenght_bytes, 
+             char *data_array, FILE *fp){
 
-    // Open the file
-    FILE *fp;
-    if((fp = fopen(data_file, "r")) == NULL){
-        perror("Error opening the file");
-        exit(EXIT_FAILURE);
-    } else if(verbose_flag){
-        printf("Successfully openned data file");
-    }
-    
     unsigned char data_counter = 0;
     char c;
+    fseek(fp, pos, SEEK_SET);
     while((c = fgetc(fp)) != EOF){
-        if(data_counter >= 3*start_byte){
-            if(data_counter < 2*data_lenght_bytes){
-                if((c >= 0x30 && c <= 0x39) || (c >= 0x41 && c <= 0x46)){
-                    data_array[data_counter - 3*start_byte] = c;
-                    data_counter++;
-                    if(verbose_flag){
-                        printf("Got data %c\n", data_array[data_counter 
-                                - 3*start_byte]);
-                    }
+        if(data_counter < 2*data_lenght_bytes){
+            if((c >= 0x30 && c <= 0x39) || (c >= 0x41 && c <= 0x46)){
+                if(verbose_flag){
+                    printf("Data written: %c\n", c);
                 }
-            } else {
-                break;
+                data_array[data_counter] = c;
+                data_counter++;
             }
         } else {
-            data_counter++;
-            if(verbose_flag){
-                printf("Getting to data, %X ",data_counter);
-            }
+            break;
         }
     }
+    pos = ftell(fp);
+}
+
+
+
+
+unsigned int countData(FILE *fp){
+    unsigned int char_counter = 0;
+    char c;
+    
+    while((c = getc(fp)) != EOF){
+        if((c >= 0x30 && c <= 0x39) || (c >= 0x41 && c <= 0x46)){
+            char_counter++;
+        }
+    }
+    if(verbose_flag){
+        printf("COUNTED DATA: %d\n", char_counter/2);
+    }
+    return char_counter/2;
 }
