@@ -17,6 +17,8 @@
     COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER 
     IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
     CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+    Written by Raúl Estévez Gómez <estevezgomezraul@gmail.com>
 */
 #include <unistd.h>
 #include <stdlib.h>
@@ -91,7 +93,7 @@ int handleCLIargs(int argc, char *argv[]){
                 break;
             case 'H':
             case 'h':
-                help_flag = 1;
+                helpHandler();
                 break;
             case 'G':
                 versionHandler();
@@ -142,5 +144,31 @@ int versionHandler(){
     printf("Copyright (C) 2021 Raúl Estévez Gómez\n");
     printf("This is free software: you are free to change and redistribute it.\n");
     printf("There is NO WARRANTY, to the extent permitted by law.\n");
+    exit(EXIT_SUCCESS);
+}
+
+int helpHandler(){
+    printf("eepromIHEX\t%s\n\n", VERSION);
+    printf("USAGE\n\teepromIHEX [options] filename \n");
+    printf("-----------------------------------------------------");
+    printf("\nDESCRIPTION\n");
+    printf("\tTakes data from a CSV file and formats it to IHEX. This file is then ready to be uploaded into an avr eeprom using avrdude.\n");
+    printf("-----------------------------------------------------");
+    printf("\nOPTIONS\n");
+    printf("\t--output\t-o\t\tThe name of the output file. DEFAULT: a.eep\n");
+    printf("\t--datalenght\t-d\t\tMaximum number of bytes per IHEX entry. DEFAULT: 16\n");
+    printf("\t--address\t-a\t\tThe first address you want to write to. DEFAULT: 0\n");
+    printf("\t--verbose\t-v\t\tPrints verbose messages\n");
+    printf("\t--help\t\t-h\t\tDisplays this information\n");
+    printf("\t--version\t  \t\tDisplays the version message\n");
+    printf("-----------------------------------------------------");
+    printf("\nEXAMPLES\n");
+    printf("\tDefaults, read from data.eep\n");
+    printf("\t\teepromIHEX data.eep\n\n");
+    printf("\tOutput to eeprom.eep, datalenght of 8, start writting from address 0xFF\n");
+    printf("\t\teepromIHEX -o eeprom.eep -d 8 -a 255 data.eep\n");
+    printf("-----------------------------------------------------");
+    printf("\nCreated by: Raúl Estévez Gómez    <estevezgomezraul@gmail.com>\n\n");
+    printf("If you encounter any bug, please refer to https://github.com/SarKing/eepromIHEX\n");
     exit(EXIT_SUCCESS);
 }

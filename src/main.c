@@ -17,6 +17,8 @@
     COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER 
     IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
     CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+    Written by Raúl Estévez Gómez <estevezgomezraul@gmail.com>
 */
 
 #include <stdio.h>
@@ -73,8 +75,8 @@ int main(int argc, char *argv[]){
         // Get data
         getData(MAX_DATA_LENGTH, data, input_file);
         // Write data
-        writeLine(output_file, MAX_DATA_LENGTH, MAX_DATA_LENGTH*data_counter, 
-                data);
+        writeLine(output_file, MAX_DATA_LENGTH, 
+                MAX_DATA_LENGTH*data_counter+INTIAL_ADDRESS, data);
 
         data_remainign -= MAX_DATA_LENGTH;
         data_counter++;
