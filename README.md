@@ -71,7 +71,7 @@ $ eepromIHEX -a 255 data.csv
 ```
 
 #### CSV File
-The CSV file used as data source need to be like this
+The CSV file used as data source needs to be like this
 ```bash
 00,FF,5D,6E44,62,86,72,D2,55,12,22,4F,FF,00,00,00,23,45,63,56
 ```
