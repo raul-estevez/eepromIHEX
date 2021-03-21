@@ -39,7 +39,8 @@ static struct option long_options[] = {
 
 int handleCLIargs(int argc, char *argv[]){
     int option;
-    while((option = getopt_long_only(argc, argv, "o:O:d:D:a:A:vVhHG", long_options, NULL)) != -1){ 
+    while((option = getopt_long_only(argc, argv, "o:O:d:D:a:A:vVhHG", 
+                    long_options, NULL)) != -1){ 
         switch(option){
             case 'O':
             case 'o':
@@ -77,17 +78,21 @@ int handleCLIargs(int argc, char *argv[]){
                 break;
             case '?':
                 if(optopt == 'o'){
-                    fprintf (stderr, "Option -%c requires an argument.\n", optopt);
+                    fprintf (stderr, "Option -%c requires an argument.\n",
+                            optopt);
                 } else if(optopt == 'd'){
-                    fprintf (stderr, "Option -%c requires an argument.\n", optopt);
+                    fprintf (stderr, "Option -%c requires an argument.\n", 
+                            optopt);
                 } else if(optopt == 'a'){
-                    fprintf (stderr, "Option -%c requires an argument.\n", optopt);
+                    fprintf (stderr, "Option -%c requires an argument.\n", 
+                            optopt);
                 }
             default:
                 abort ();
         }
     }
-
+    
+    // Handle the mandatory ouput file argument
     if(argv[optind] == NULL){
         puts("Error, input file is a mandatory argument");
         exit(EXIT_FAILURE);

@@ -107,7 +107,7 @@ void getData(unsigned char data_lenght_bytes,
             break;
         }
     }
-    // Sabe current position
+    // Save current position
     pos = ftell(fp);
 }
 
@@ -118,7 +118,7 @@ unsigned int countData(FILE *fp){
     unsigned int char_counter = 0;
     char c;
     
-    // While we ahce data 
+    // While we have data 
     while((c = getc(fp)) != EOF){
         // Only if the data is a number or a A-F letter
         if((c >= 0x30 && c <= 0x39) || (c >= 0x41 && c <= 0x46)){
