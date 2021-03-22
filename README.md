@@ -12,7 +12,7 @@ Takes data from a CSV file and formats it to IHEX. This file is then ready to be
 
 ## Installation
 
-For installing, clone this repository to your computer, enter in the folder
+For installing, clone this repository to your computer (or download from the release page), enter in the folder
 eepromIHEX and type "make", then "make install" as root.
 
 ```bash
