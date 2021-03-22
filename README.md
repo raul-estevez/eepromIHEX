@@ -40,7 +40,7 @@ The basic use of this application just requires a CSV data file.
 ```bash
 $ eepromIHEX data_file
 ```
-And it will generate a file called "a.eep" that contains your data formatted to IHEX.
+And it will generate a file called "a.eep" that contains your data formatted into IHEX.
 
 But you have more customization in the form of arguments.
 
@@ -60,7 +60,7 @@ Get data from data.csv, output IHEX formatted data to eeprom.eep
 $ eepromIHEX -o eeprom.eep data.csv
 ```
 
-Format IHEX with 8 byte data length instead of the default 16
+Format IHEX with 8 byte data length instead of the default 32 
 ```bash
 $ eepromIHEX -d 8 data.csv
 ```
@@ -75,18 +75,18 @@ The CSV file used as data source needs to be like this
 ```bash
 00,FF,5D,6E44,62,86,72,D2,55,12,22,4F,FF,00,00,00,23,45,63,56
 ```
-It causes no problem if two or more commas are together, like this
+It causes no problem if two or more commas are together, like for example 
 ```bash
 00,FF,,6E44,62,86,,,55,12,22,,,,,00,23,45,63,56
 ```
-But by no means can be data more than 1 byte long, so this is prohibited and will cause a malfunction
+But by no means data can be more than 1 byte long, so this is prohibited and will cause a malfunction
 ```bash
 00,FFF,545D,6E44,62,86,72FF,D2,55,12,22,4F,FF,00,00,00,23,45,63,56
 ```
 
 ## Uploading
 
-Once you have the .eep file, for uploading it to a AVR microcontroller using
+Once you have the .eep file, if you want to upload it to a AVR microcontroller using
 avrdude you have to use this command.
 ```bash
 $ avrdude -c "programmer" -p "mmcu" -U eeprom:w:"filename":i
