@@ -7,7 +7,7 @@ Takes data from a CSV file and formats it to IHEX. This file is then ready to be
 - [Usage](#usage)
     - [Arguments](#arguments)
     - [Examples](#examples)
-    - [CSV File](#csvfile)
+    - [CSV File](#csv-file)
 - [Uploading](#uploading)
 
 ## Installation
