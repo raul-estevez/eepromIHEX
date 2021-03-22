@@ -89,6 +89,6 @@ But by no means can be data more than 1 byte long, so this is prohibited and wil
 Once you have the .eep file, for uploading it to a AVR microcontroller using
 avrdude you have to use this command.
 ```bash
-$ avrdudde -c programmer -p mmcu -U eeprom:w:filename:i
+$ avrdude -c "programmer" -p "mmcu" -U eeprom:w:"filename":i
 ```
-Where filename is the .eep file you just generated
+Where "programmer" is the programmer you use (USBTiny, USBasp...), "mmcu" is the microcontroller you use (attiny85, atmega328...) and "filename" is the .eep file you just generated, the remaining leave it as is.
