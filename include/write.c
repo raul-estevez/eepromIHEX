@@ -74,6 +74,7 @@ void writeLine(FILE *fp, unsigned char byte_count,
     }
 
     // Data 
+    unsigned char hex_counter = 0;
     for(int i = 0; i < 2*byte_count; i++){
         //Format: padding with zeros, 2 characters
         if((fprintf(fp,"%c", data[i])) < 0){
@@ -84,12 +85,31 @@ void writeLine(FILE *fp, unsigned char byte_count,
             printf("Data: %c\n", data[i]);
         }
 
-        checksum += data[i];                         
         if(verbose_flag){
             printf("Successfully written data %c\n", data[i]);
             printf("Checksum sum: %X\n", checksum);
         }
     }
+
+    // Data checksum
+    unsigned char hex[2*byte_count];
+    for(int i = 0; i < 2*byte_count; i++){
+        if((data[i] >= '0') && (data[i] <= '9')){
+            // Es un numero
+            hex[i] = data[i] - '0';
+        } else if((data[i] >= 'A') && (data[i] <= 'F')){
+            // Es una letra
+            hex[i] = data[i] - '7';
+        } else {
+            printf("%c\n", data[i]);
+            puts("Error");
+        }
+    }
+
+    for(int i = 0; i < sizeof(hex)-1; i+=2){
+        checksum += (hex[i] << 4) | hex[i+1];
+    }
+
 
     // The checksum is calculated by summing each byte we written, 
     // calculating its two's complement and keeping the LSByte

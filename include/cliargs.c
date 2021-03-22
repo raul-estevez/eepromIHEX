@@ -129,7 +129,7 @@ int handleCLIargs(int argc, char *argv[]){
     }
     // Default data length
     if(!dataLength_flag){
-        MAX_DATA_LENGTH = 0x10;
+        MAX_DATA_LENGTH = 0x20;
     }
     // Default initial address
     if(!address_flag){
@@ -156,7 +156,7 @@ int helpHandler(){
     printf("-----------------------------------------------------");
     printf("\nOPTIONS\n");
     printf("\t--output\t-o\t\tThe name of the output file. DEFAULT: a.eep\n");
-    printf("\t--datalenght\t-d\t\tMaximum number of bytes per IHEX entry. DEFAULT: 16\n");
+    printf("\t--datalenght\t-d\t\tMaximum number of bytes per IHEX entry. DEFAULT: 32\n");
     printf("\t--address\t-a\t\tThe first address you want to write to. DEFAULT: 0\n");
     printf("\t--verbose\t-v\t\tPrints verbose messages\n");
     printf("\t--help\t\t-h\t\tDisplays this information\n");

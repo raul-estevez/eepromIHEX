@@ -47,7 +47,7 @@ But you have more customization in the form of arguments.
 #### Arguments
 
     -output             -o      The name of the output file. DEFAULT: a.eep
-    --datalenght        -d      Maximum number of bytes per IHEX entry. DEFAULT: 16
+    --datalenght        -d      Maximum number of bytes per IHEX entry. DEFAULT: 32 
     --address           -a      The first address you want to write to. DEFAULT: 0
     --verbose           -v      Prints verbose information
     --help              -h      Prints help page
@@ -89,6 +89,6 @@ But by no means can be data more than 1 byte long, so this is prohibited and wil
 Once you have the .eep file, for uploading it to a AVR microcontroller using
 avrdude you have to use this command.
 ```bash
-$ avrdudde eeprom:w:filename:i
+$ avrdudde -c programmer -p mmcu -U eeprom:w:filename:i
 ```
 Where filename is the .eep file you just generated
