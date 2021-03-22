@@ -95,19 +95,22 @@ void writeLine(FILE *fp, unsigned char byte_count,
     unsigned char hex[2*byte_count];
     for(int i = 0; i < 2*byte_count; i++){
         if((data[i] >= '0') && (data[i] <= '9')){
-            // Es un numero
+            // Is a number
             hex[i] = data[i] - '0';
         } else if((data[i] >= 'A') && (data[i] <= 'F')){
-            // Es una letra
+            // Is a letter
             hex[i] = data[i] - '7';
         } else {
-            printf("%c\n", data[i]);
-            puts("Error");
-        }
+            printf("Error calculating checksum");
+            exit(EXIT_FAILURE);
+        } 
     }
 
     for(int i = 0; i < sizeof(hex)-1; i+=2){
         checksum += (hex[i] << 4) | hex[i+1];
+        if(verbose_flag){
+            printf("Data checksum %X\n", checksum);
+        }
     }
 
 
