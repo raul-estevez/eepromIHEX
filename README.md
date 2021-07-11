@@ -9,6 +9,8 @@ Takes data from a CSV file and formats it to IHEX. This file is then ready to be
     - [Examples](#examples)
     - [CSV File](#csv-file)
 - [Uploading](#uploading)
+- [Author](#author)
+- [License](#license)
 
 ## Installation
 
@@ -24,7 +26,7 @@ $ sudo make install
 
 By default it's installed in /opt/eepromIHEX
 
-#### Unistall
+#### Uninstall
 
 If you want to uninstall the application enter with your terminal in the folder
 that you downloaded and type:
@@ -73,7 +75,7 @@ $ eepromIHEX -a 255 data.csv
 #### CSV File
 The CSV file used as data source needs to be like this
 ```bash
-00,FF,5D,6E44,62,86,72,D2,55,12,22,4F,FF,00,00,00,23,45,63,56
+00,FF,5D,6E,44,62,86,72,D2,55,12,22,4F,FF,00,00,00,23,45,63,56
 ```
 It causes no problem if two or more commas are together, like for example 
 ```bash
@@ -92,3 +94,10 @@ avrdude you have to use this command.
 $ avrdude -c "programmer" -p "mmcu" -U eeprom:w:"filename":i
 ```
 Where "programmer" is the programmer you use (USBTiny, USBasp...), "mmcu" is the microcontroller you use (attiny85, atmega328...) and "filename" is the .eep file you just generated, the remaining leave it as is.
+
+## Author 
+Raul Estevez Gomez. Contact email: estevezgomezraul@gmail.com  
+Please feel free to contact me if you have any type of suggestion or question.
+
+## License
+You can read the license [here](LICENSE)
